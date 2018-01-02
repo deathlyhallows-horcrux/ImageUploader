@@ -1,0 +1,143 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<link href="~/Scripts/dropzone/dropzone.css" rel="stylesheet" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="~/Content/css/Style.css" />
+<link rel="text/javascript" href="~/Content/js/Script.js" />
+
+<div class="header"></div>
+<div class="main">
+
+    <div class="banner"><img src="//pkcdn.azureedge.net/pkimages/PKCIGAR-800.jpg" width="400" height="400" alt="pklogo" />&nbsp&nbsp<img src="//espcdn.azureedge.net/espimages/ESP_LOGO_HORIZ_2016.jpg" width="400" height="400" alt="esplogo" /></div>
+    <div class="menu">
+        <div><a class="btn btn-primary btn-large imageupload">Image Upload</a></div>
+        <div><a class="btn btn-primary btn-large searchimages">Search Images</a></div>
+    </div>
+  
+    @using (Html.BeginForm("AzureReport", "Home", FormMethod.Get, new { @class = "bloblist" }))
+    {
+        <input type="submit" class="btn btn-success" id="report" value="Image Report" />
+    }
+    <div class="uploader">
+        <h1 class="title">Azure Image Uploader</h1>
+
+        <div class="jumbotron">
+            <form action="" method="post" enctype="multipart/form-data" class="dropzone" id="my-dropzone" style="width: 600px; height:auto; background: #e0d9d9; border: none;">
+                <select autofocus name="storage" class="dropdown" data-style="btn-primary">
+                    <option value="PKImages">PKImages</option>
+                    <option value="ESPImages">ESPImages</option>
+                </select><br />
+                <p class="dz-message"> Drop or click here to upload multiple files.</p>
+                <input style="display:none" name="file" type="file" multiple />
+                @*<input type="submit" value="upload" />*@
+                <div class="dz-dictFileTooBig"></div>
+            </form>
+       
+        </div>
+        
+        <div style="display:inline-flex">
+            @using (Html.BeginForm("AzurePurgeAllPK", "Home", FormMethod.Post))
+            {
+                <input type="submit" class="btn btn-success purgepk" id="purgepk" value="Purge PK" />
+            }
+            @using (Html.BeginForm("AzurePurgeAllESP", "Home", FormMethod.Post))
+            {
+                <input type="submit" class="btn btn-success purgeesp" id="purgeesp" value="Purge ESP" />
+            }
+        </div>
+        @*<form action="~/Home/AzureUpdateAll" method="post">
+            <input type="submit" class="btn btn-success purgepk" id="purgepk" value="Purge PK" />
+        </form>*@
+            <p>@ViewBag.purge</p>
+   
+</div>
+    <div class ="uploader" id="success"> </div>
+     
+
+    @*to delete images*@
+    <div class="partial">
+        @*@Html.Partial("~/Views/Shared/_partial1.cshtml")
+            </div>*@
+
+        <div class="delete">
+            <h2>Search and Delete Images from Azure storage accounts</h2>
+            <div class="jumbotron">
+
+                @using (Html.BeginForm("Azurelistblobs", "Home", FormMethod.Get, new { @class = "bloblist" }))
+                {
+
+                    <select name="account" class="dropdown" id="selectaccount" data-style="btn-primary">
+                        <option value="" disabled selected>Select account</option>
+                        <option id="pkimages" value="pkimages">PKImages</option>
+                        <option id="espimages" value="espimages">ESPImages</option>
+                    </select>
+                    <input type="text" class="form-control" name="image" placeholder="Ex: ima">
+                    <input type="submit" class="btn btn-primary" id="blob" value="Search" />
+
+                }
+                <p class="write"></p>
+                <p id="msgstatus">@Html.Raw(ViewBag.sendMsg)</p>
+                @model IEnumerable<AzureImageUploader.Models.HomePageModel>
+
+                @{
+                    var images = ViewData["listtoimages"];
+                }
+                @if (Model != null)
+            {
+                var accountname = @ViewBag.account;
+                    <input type="hidden" id="account" value="@ViewBag.account" />
+                    <table class="list">
+                        @foreach (var image in Model)
+                        {
+                            <tr id="imagerow">
+                                <td>
+                                    <img src="https://@(ViewBag.account).blob.core.windows.net/@(ViewBag.account)/@(image.ImageFilter)" width="150" height="150" />
+                                </td>
+                                <td>
+                                    <p id="imagename" data-myvalue="@image.ImageFilter">@image.ImageFilter</p>
+                                    <input type="hidden" class="image" value="@image.ImageFilter" />
+                                </td>
+                                <td><input type="submit" class="delimage" value="Delete" /></td>
+                            </tr>
+                        }
+                    </table>
+                }
+                else { }
+
+
+                @*@{
+                        if (@ViewBag.imagestatus == "exists")
+                        {
+                            <img id="imagetodelete" src=@ViewBag.linktoimage width="400" height="400" />
+                            <button type="button" id="deleteimage" onclick="deleteImage()">Delete</button>
+                        }
+                        else
+                        {
+                            <br />
+                            <br />
+                            <p>@Html.Raw(ViewBag.imagestatus)</p>
+                            <p>@ViewBag.enterfilename</p>
+
+                        }
+                    }
+                    @{
+                        if (@ViewBag.deletestatus == "yes")
+                        {
+                            <p>Image is deleted</p>
+
+                        }
+                        else
+                        {
+                            <p>@ViewBag.error</p>
+                        }
+                    }*@
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer"></div>

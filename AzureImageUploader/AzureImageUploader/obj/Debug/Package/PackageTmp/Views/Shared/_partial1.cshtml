@@ -1,0 +1,74 @@
+﻿
+<div class="delete">
+    <h2>Search and Delete Images from Azure storage accounts</h2>
+    <div class="jumbotron">
+
+        @using (Html.BeginForm("Azurelistblobs", "Home", FormMethod.Get, new { @class = "bloblist" }))
+        {
+            <select name="account" class="dropdown" id="selectaccount" data-style="btn-primary">
+                @*<option value="" disabled selected>Select account</option>*@
+                <option value="pkimages" selected>PKImages</option>
+                <option value="espimages">ESPImages</option>
+            </select>
+            <input type="text" class="form-control" name="image" placeholder="Ex: ima">
+            <input type="submit" class="btn btn-primary" id="blob" value="Search" />
+        }
+        <p class="write"></p>
+        <p id="msgstatus">@Html.Raw(ViewBag.sendMsg)</p>
+        @model IEnumerable<AzureImageUploader.Models.HomePageModel>
+
+        @{
+            var images = ViewData["listtoimages"];
+        }
+        @if (Model != null)
+        {
+            var accountname = @ViewBag.account;
+            <input type="hidden" id="account" value="@ViewBag.account" />
+            <table class="list">
+                @foreach (var image in Model)
+                {
+                    <tr id="imagerow">
+                        <td>
+                            <img src="https://@(ViewBag.account).blob.core.windows.net/@(ViewBag.account)/@(image.ImageFilter)" width="150" height="150" />
+                        </td>
+                        <td>
+                            <p id="imagename" data-myvalue="@image.ImageFilter">@image.ImageFilter</p>
+                            <input type="hidden" class="image" value="@image.ImageFilter" />
+                        </td>
+                        <td><input type="submit" class="delimage" value="Delete"/></td>
+                    </tr>
+                }
+            </table>
+        }
+        else { }
+
+
+        @*@{
+                if (@ViewBag.imagestatus == "exists")
+                {
+                    <img id="imagetodelete" src=@ViewBag.linktoimage width="400" height="400" />
+                    <button type="button" id="deleteimage" onclick="deleteImage()">Delete</button>
+                }
+                else
+                {
+                    <br />
+                    <br />
+                    <p>@Html.Raw(ViewBag.imagestatus)</p>
+                    <p>@ViewBag.enterfilename</p>
+
+                }
+            }
+            @{
+                if (@ViewBag.deletestatus == "yes")
+                {
+                    <p>Image is deleted</p>
+
+                }
+                else
+                {
+                    <p>@ViewBag.error</p>
+                }
+            }*@
+
+    </div>
+</div>
